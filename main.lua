@@ -146,22 +146,29 @@ SMODS.Joker{
     pos = {x = 0, y = 0},
     config = { 
         extra = {
-            Xmult = 100
+            mult = 0,
+            mult_gain = 10,
         }
     },
     loc_vars = function(self, info_queue, center)
-        return {vars = {center.ability.extra.Xmult}}
+        return {vars = {center.ability.extra.mult}}
     end,
-    calculate = function(self,card,context)
-        if context.joker_main then
+    calculate = function(self, card, context)
+        -- Check if we have played a Flush before we do any scoring and increment the chips
+        if context.before and next(context.poker_hands['Flush']) then
+            card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_gain
             return {
-                card = card,
-                Xmult_mod = card.ability.extra.Xmult,
-                message = 'X' .. card.ability.extra.Xmult,
-                colour = G.C.MULT
+                message = 'Upgraded!',
+                colour = G.C.RED
             }
         end
-    end
+        -- Add the chips in main scoring context
+        if context.joker_main then
+            return {
+                mult = card.ability.extra.mult
+            }
+        end
+    end,
 }
 -- Saturn
 SMODS.Joker{
@@ -172,6 +179,7 @@ SMODS.Joker{
             'Saturn Desc.',
         }
     },
+    rarity = 3,
     atlas = 'Jokers',
     pos = {x = 0, y = 0},
     config = { 
@@ -182,16 +190,22 @@ SMODS.Joker{
     loc_vars = function(self, info_queue, center)
         return {vars = {center.ability.extra.Xmult}}
     end,
-    calculate = function(self,card,context)
-        if context.joker_main then
+    calculate = function(self, card, context)
+        -- Check if we have played a Flush before we do any scoring and increment the chips
+        if context.before and next(context.poker_hands['Straight']) then
+            card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_gain
             return {
-                card = card,
-                Xmult_mod = card.ability.extra.Xmult,
-                message = 'X' .. card.ability.extra.Xmult,
-                colour = G.C.MULT
+                message = 'Upgraded!',
+                colour = G.C.RED
             }
         end
-    end
+        -- Add the chips in main scoring context
+        if context.joker_main then
+            return {
+                mult = card.ability.extra.Xmult
+            }
+        end
+    end,
 }
 -- Uranus
 SMODS.Joker{
