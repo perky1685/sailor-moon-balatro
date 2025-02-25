@@ -78,28 +78,39 @@ SMODS.Joker{
     loc_txt = {
         name = 'Sailor Venus',
         text = {
-            'Venus Desc.',
+            'Gains {C:red}+12{} Mult every time you use {C:planet}Venus{}.',
+            '{C:inactive}(Currently {C:red}+#1#{} {C:inactive}Mult){}',
         }
     },
+    rarity = 2,
     atlas = 'Jokers',
     pos = {x = 0, y = 0},
     config = { 
         extra = {
+            mult = 0,  -- Set to 1
+
         }
     },
     loc_vars = function(self, info_queue, center)
-        return {vars = {center.ability.extra.Xmult}}
+        return {vars = {center.ability.extra.mult}}
     end,
-    calculate = function(self,card,context)
+    calculate = function(self, card, context)
+        if context.using_consumeable and context.consumeable.ability.name == "Venus" and not context.blueprint then
+            card.ability.extra.mult = card.ability.extra.mult + 12
+            return {
+                message = 'Upgraded!',
+                colour = G.C.RED,
+            }
+        end
         if context.joker_main then
             return {
                 card = card,
-                Xmult_mod = card.ability.extra.Xmult,
-                message = 'X' .. card.ability.extra.Xmult,
+                mult_mod = card.ability.extra.mult,
+                message = '+' .. card.ability.extra.mult,
                 colour = G.C.MULT
             }
         end
-    end
+    end,
 }
 -- Mars
 SMODS.Joker{
@@ -148,33 +159,36 @@ SMODS.Joker{
     loc_txt = {
         name = 'Sailor Jupiter',
         text = {
-            'Jupiter Desc.',
+            'Gains {C:red}+12{} Mult every time you use {C:planet}Jupiter{}.',
+            '{C:inactive}(Currently {C:red}+#1#{} {C:inactive}Mult){}',
         }
     },
+    rarity = 2,
     atlas = 'Jokers',
     pos = {x = 0, y = 0},
     config = { 
         extra = {
-            mult = 0,
-            mult_gain = 10,
+            mult = 0,  -- Set to 1
+
         }
     },
     loc_vars = function(self, info_queue, center)
         return {vars = {center.ability.extra.mult}}
     end,
     calculate = function(self, card, context)
-        -- Check if we have played a Flush before we do any scoring and increment the chips
-        if context.before and next(context.poker_hands['Flush']) then
-            card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_gain
+        if context.using_consumeable and context.consumeable.ability.name == "Jupiter" and not context.blueprint then
+            card.ability.extra.mult = card.ability.extra.mult + 12
             return {
                 message = 'Upgraded!',
-                colour = G.C.RED
+                colour = G.C.RED,
             }
         end
-        -- Add the chips in main scoring context
         if context.joker_main then
             return {
-                mult = card.ability.extra.mult
+                card = card,
+                mult_mod = card.ability.extra.mult,
+                message = '+' .. card.ability.extra.mult,
+                colour = G.C.MULT
             }
         end
     end,
