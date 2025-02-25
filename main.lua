@@ -48,29 +48,38 @@ SMODS.Joker{
     loc_txt = {
         name = 'Sailor Mercury',
         text = {
-            'Mercury Desc.',
+            'Gains {C:chips}+25{} Chips every time you use {C:planet}Mercury{}.',
+            '{C:inactive}(Currently {C:chips}+#1#{} {C:inactive}Chips){}',
         }
     },
+    rarity = 1,
     atlas = 'Jokers',
     pos = {x = 0, y = 0},
     config = { 
         extra = {
-
+            chips = 0,
         }
     },
     loc_vars = function(self, info_queue, center)
-        return {vars = {center.ability.extra.Xmult}}
+        return {vars = {center.ability.extra.chips}}
     end,
-    calculate = function(self,card,context)
+    calculate = function(self, card, context)
+        if context.using_consumeable and context.consumeable.ability.name == "Mercury" and not context.blueprint then
+            card.ability.extra.chips = card.ability.extra.chips + 25
+            return {
+                message = 'Upgraded!',
+                colour = G.C.RED,
+            }
+        end
         if context.joker_main then
             return {
                 card = card,
-                Xmult_mod = card.ability.extra.Xmult,
-                message = 'X' .. card.ability.extra.Xmult,
-                colour = G.C.MULT
+                chips = card.ability.extra.chips,
+                message = '+' .. card.ability.extra.chips,
+                colour = G.C.CHIPS
             }
         end
-    end
+    end,
 }
 -- Venus
 SMODS.Joker{
@@ -301,32 +310,42 @@ SMODS.Joker{
 }
 -- Pluto
 SMODS.Joker{
-    key = 'Sailor Moon',
+    key = 'Sailor Pluto',
     loc_txt = {
-        name = 'Sailor Moon',
+        name = 'Sailor Pluto',
         text = {
-            'Moon Desc.',
+            'Gains {C:chips}+25{} Chips every time you use {C:planet}Pluto{}.',
+            '{C:inactive}(Currently {C:chips}+#1#{} {C:inactive}Chips){}',
         }
     },
+    rarity = 1,
     atlas = 'Jokers',
     pos = {x = 0, y = 0},
     config = { 
         extra = {
+            chips = 0,
         }
     },
     loc_vars = function(self, info_queue, center)
-        return {vars = {center.ability.extra.Xmult}}
+        return {vars = {center.ability.extra.chips}}
     end,
-    calculate = function(self,card,context)
+    calculate = function(self, card, context)
+        if context.using_consumeable and context.consumeable.ability.name == "Pluto" and not context.blueprint then
+            card.ability.extra.chips = card.ability.extra.chips + 25
+            return {
+                message = 'Upgraded!',
+                colour = G.C.RED,
+            }
+        end
         if context.joker_main then
             return {
                 card = card,
-                Xmult_mod = card.ability.extra.Xmult,
-                message = 'X' .. card.ability.extra.Xmult,
-                colour = G.C.MULT
+                chips = card.ability.extra.chips,
+                message = '+' .. card.ability.extra.chips,
+                colour = G.C.CHIPS
             }
         end
-    end
+    end,
 }
 ----------------------------------------------
 ------------MOD CODE END----------------------
