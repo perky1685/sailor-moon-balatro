@@ -3,7 +3,7 @@
 --- MOD_ID: SAILORMOON
 --- MOD_AUTHOR: [phoebie]
 --- MOD_DESCRIPTION: Sailor Moon Mod
---- PREFIX: xmpl
+--- PREFIX: slrmn
 ----------------------------------------------
 ------------MOD CODE -------------------------
 
@@ -49,12 +49,13 @@ SMODS.Joker{
 }
 -- Mercury DONE
 SMODS.Joker{
-    key = 'Sailor Mercury',
+    key = 'sailormercury',
     loc_txt = {
         name = 'Sailor Mercury',
         text = {
             'Gains {C:chips}+25{} Chips every time you use {C:planet}Mercury{}.',
             '{C:inactive}(Currently {C:chips}+#1#{} {C:inactive}Chips){}',
+            '{C:inactive}(#2#/3 {C:planet}Mercury{}{C:inactive} cards used){}'
         }
     },
     rarity = 1,
@@ -63,14 +64,25 @@ SMODS.Joker{
     config = { 
         extra = {
             chips = 0,
+            amount = 0,
         }
     },
     loc_vars = function(self, info_queue, center)
-        return {vars = {center.ability.extra.chips}}
+        return {vars = {center.ability.extra.chips, center.ability.extra.amount}}
     end,
     calculate = function(self, card, context)
         if context.using_consumeable and context.consumeable.ability.name == "Mercury" and not context.blueprint then
             card.ability.extra.chips = card.ability.extra.chips + 25
+            card.ability.extra.amount = card.ability.extra.amount + 1
+            if card.ability.extra.amount == 2 then
+                card:juice_up(0.8, 0.8)
+                card:start_dissolve({ HEX("63f06b") }, nil, 1.6)
+                local newcard = create_card("Joker", G.jokers, nil, nil, nil, nil, "j_slrmn_sailormercury", nil)
+                newcard:add_to_deck()
+                G.jokers:emplace(newcard)
+                newcard:start_materialize()
+                return true
+            end
             return {
                 message = 'Upgraded!',
                 colour = G.C.RED,
